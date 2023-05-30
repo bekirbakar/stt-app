@@ -1,0 +1,17 @@
+# OS generated files.
+.DS_Store
+
+# Editor generated files.
+.idea/
+.vscode/
+
+# Node
+node_modules/
+package-lock.json
+
+# Python
+__pycache__/
+
+# Temporary
+backend/*
+!backend/inference.py

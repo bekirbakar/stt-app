@@ -1,0 +1,35 @@
+{
+    "settings": {
+        "languages": {
+            "selected": "en",
+            "supported": [
+                {
+                    "id": "en",
+                    "name": "English"
+                },
+                {
+                    "id": "tr",
+                    "name": "Türkçe"
+                }
+            ]
+        },
+        "darkMode": true,
+        "supportedExtensions": [
+            "wav",
+            "mp3"
+        ]
+    },
+    "aboutUrl": "https://github.com/bekirbakar/stt-app",
+    "pythonInterpreter": "/opt/miniconda3/envs/whisper/bin/python",
+    "pythonScript": "backend/inference.py",
+    "engines": [
+        {
+            "id": "openai/whisper",
+            "name": "openai/whisper",
+            "models": [
+                "tiny",
+                "base"
+            ]
+        }
+    ]
+}

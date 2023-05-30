@@ -1,0 +1,20 @@
+{
+    "name": "stt-app",
+    "version": "1.0.0",
+    "description": "Placeholder",
+    "main": "index.js",
+    "scripts": {
+        "test": "",
+        "start": "electron ."
+    },
+    "keywords": [],
+    "author": "Bekir Bakar",
+    "license": "ISC",
+    "devDependencies": {
+        "electron": "^24.3.1",
+        "jest": "^29.5.0"
+    },
+    "dependencies": {
+        "electron-reload": "^2.0.0-alpha.1"
+    }
+}

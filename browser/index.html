@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="Content-Security-Policy" content="script-src 'self';" />
+    <title>stt-app</title>
+    <link rel="stylesheet" href="styles/styles.css" />
+</head>
+
+<body>
+    <div id="sidebar">
+        <div>
+            <button id="sidebar-toggle-button" class="button">
+                <span id="sidebar-toggle-icon">➡</span>
+            </button>
+        </div>
+
+        <div>
+            <button id="settings-button" class="button"></button>
+            <button id="about-button" class="button"></button>
+        </div>
+    </div>
+
+    <div id="main-content">
+        <!-- ASR Selectors -->
+        <div>
+            <div id="asr-engine-selector" class="flex-row">
+                <label id="asr-engine-selector-label" for="engine"></label>
+                <select id="engine"></select>
+            </div>
+
+            <div id="asr-model-selector" class="flex-row">
+                <label id="asr-model-selector-label" for="model"></label>
+                <select id="model"></select>
+            </div>
+        </div>
+
+        <!-- File Upload -->
+        <div>
+            <div id="file-upload">
+                <div id="drop-zone">
+                    <p>
+                        <input type="file" id="uploaded-file" accept=".wav, .mp3" hidden />
+                        <label id="uploaded-file-label" for="uploaded-file" class="uploaded-file-label"></label>
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Result -->
+        <div>
+            <div id="result">
+                <div id="result-header">
+                    <button id="configuration-button" class="button"></button>
+                    <button id="start-button" class="button"></button>
+                </div>
+
+                <textarea id="result-box" rows="10" readonly></textarea>
+
+                <div id="result-footer">
+                    <button id="clear-button" class="button"></button>
+                    <button id="copy-button" class="button"></button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Settings Dialog -->
+        <dialog id="settings-dialog">
+            <form method="dialog" id="settings-form">
+                <h2 id="settings-title"></h2>
+                <center>This dialog is not fully implemented yet!!!</center>
+
+                <div class="flex-row">
+                    <label id="language-label" for="language"></label>
+                    <select id="language-selector"></select>
+                </div>
+
+                <div class="dialog-buttons">
+                    <button id="settings-save-button" class="button"></button>
+                    <button id="settings-exit-button" class="button"></button>
+                </div>
+            </form>
+        </dialog>
+
+        <!-- Configuration Dialog -->
+        <dialog id="configuration-dialog">
+            <form method="dialog" id="configuration-form">
+                <h2 id="configuration-title"></h2>
+                <center>This dialog is not fully implemented yet!!!</center>
+                <div class="dialog-buttons">
+                    <button id="configuration-save-button" class="button"></button>
+                    <button id="configuration-exit-button" class="button"></button>
+                </div>
+            </form>
+        </dialog>
+
+        <script src="js/main.js"></script>
+</body>
+
+</html>

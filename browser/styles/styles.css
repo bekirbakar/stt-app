@@ -1,0 +1,235 @@
+:root {
+    --primary-color: #095b0c;
+    --primary-color-hover: #064907;
+    --border-color: #ddd;
+    --transition-ease: 0.5s ease;
+}
+
+/* Top Styles */
+body {
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    width: 100vw;
+    overflow: hidden;
+    overflow-x: hidden;
+    overflow-y: hidden;
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 1.5;
+    color: #212529;
+    text-align: left;
+}
+
+.flex-row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+/* Sidebar Styles */
+#sidebar {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 20px;
+    box-sizing: border-box;
+    border-right: 5px solid var(--border-color);
+    transition: width var(--transition-ease);
+    width: auto;
+    height: 100%;
+}
+
+#sidebar.collapsed {
+    width: 80px;
+}
+
+#sidebar.collapsed #settings-button,
+#sidebar.collapsed #about-button {
+    display: none;
+}
+
+/* Main Content Styles */
+#main-content {
+    padding: 10px;
+    width: calc(100% - 200px);
+    transition: var(--transition-ease);
+}
+
+#main-content.collapsed {
+    width: calc(100% - 50px);
+}
+
+/* Selector Styles */
+#asr-engine-selector-label {
+    margin-right: 5px;
+}
+
+#asr-model-selector-label {
+    margin-right: 10px;
+}
+
+/* Button Styles */
+.button {
+    background-color: var(--primary-color);
+    color: #ffffff;
+    padding: 10px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: var(--transition-ease);
+    margin-bottom: 10px;
+}
+
+#sidebar-toggle-button,
+#settings-button,
+#about-button,
+#configuration-button,
+#start-button,
+#clear-button,
+#copy-button {
+    display: stretch;
+    flex-direction: column;
+    align-items: center;
+    background-color: var(--primary-color);
+    transition: var(--transition-ease);
+    color: #ffffff;
+    padding: 10px;
+    cursor: pointer;
+    width: 100%;
+    box-sizing: border-box;
+    margin-right: 0px;
+    margin-left: 0px;
+}
+
+#start-button,
+#configuration-button,
+#clear-button,
+#copy-button {
+    width: auto;
+}
+
+#clear-button,
+#copy-button {
+    margin-bottom: 20px;
+}
+
+.dialog-buttons {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}
+
+.dialog-buttons .button {
+    margin: 0 20px;
+    width: 120px;
+}
+
+/* Process Styles */
+#file-upload {
+    display: flex;
+    flex-direction: row;
+    margin-bottom: 10px;
+    justify-content: space-between;
+    height: 50px;
+    margin-top: 10px;
+}
+
+#drop-zone {
+    flex-direction: column;
+    flex: 3;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 50%;
+    border: 5px dashed var(--border-color);
+    padding: 20px;
+    cursor: pointer;
+}
+
+select,
+input[type="file"],
+textarea {
+    padding: 10px;
+    border-radius: 10px;
+    border: 1px solid var(--border-color);
+    width: 100%;
+    resize: none;
+}
+
+textarea {
+    margin-top: 10px;
+    margin-bottom: 14px;
+    max-width: 100%;
+    height: 200px;
+    box-sizing: border-box;
+    font-size: 12px;
+}
+
+select:hover,
+input[type="file"]:hover,
+textarea:hover {
+    border: 1px solid var(--primary-color-hover);
+}
+
+#result {
+    margin-top: 50px;
+    width: 100%;
+}
+
+#result-header,
+#result-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.uploaded-file-label {
+    display: inline-block;
+    padding: 10px;
+    background: var(--border-color);
+    cursor: pointer;
+}
+
+/* Form Styles */
+#settings-form,
+#configuration-form {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    justify-content: space-between;
+}
+
+#settings-form>div,
+#configuration-form>div {
+    margin-bottom: 20px;
+}
+
+#settings-title,
+#configuration-title {
+    text-align: center;
+}
+
+/* Dialog Styles */
+dialog {
+    width: 75vw;
+    height: 75vh;
+    border: 5px solid var(--border-color);
+    border-radius: 10px;
+    box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.1);
+}
+
+dialog::backdrop {
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(10px);
+}
+
+#language-label {
+    margin-right: 10px;
+}
