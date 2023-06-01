@@ -4,7 +4,7 @@
 // and handles the lifecycle events of the application.
 
 const path = require("path");
-const { app, ipcMain, dialog, BrowserWindow, globalShortcut } = require("electron");
+const { app, ipcMain, dialog, BrowserWindow, globalShortcut, nativeTheme } = require("electron");
 
 // Import and configure the module for live-reloading the app during development.
 const electronReload = require("electron-reload");
@@ -16,8 +16,6 @@ let mainWindow = null;
 function initialize() {
     // Window options for main window.
     let windowOptions = {
-        backgroundColor: "#808080",
-        title: "Placeholder",
         width: 800,
         height: 600,
         resizable: false,
@@ -27,18 +25,17 @@ function initialize() {
             nodeIntegration: true,
             nodeIntegrationInWorker: true,
             contextIsolation: false,
-            preload: path.resolve(__dirname, "preload.js"),
             webSecurity: true,
             minimumFontSize: 10,
             defaultFontSize: 18,
             defaultMonospaceFontSize: 20,
-            enableRemoteModule: true
+            enableRemoteModule: true,
         },
         acceptFirstMouse: true,
         frame: true,
         transparent: false,
         titleBarStyle: "default",
-        maximizable: false
+        maximizable: false,
     };
 
     mainWindow = new BrowserWindow(windowOptions);
@@ -46,18 +43,26 @@ function initialize() {
     // TODO: Hide menu bar!!!
     mainWindow.setMenuBarVisibility(false);
 
-    mainWindow.loadFile(path.resolve(__dirname, "browser/index.html")).then();
+    mainWindow.loadFile(path.resolve(__dirname, "browser/index.html")).catch((error) => {
+        console.error(`Failed to load main window: ${error.toString()}`);
+    });
 
-    mainWindow.once("ready-to-show", () => { mainWindow.show(); });
+    mainWindow.once("ready-to-show", () => {
+        mainWindow.show();
+    });
 
-    mainWindow.on("close", () => { mainWindow = null; });
+    mainWindow.on("close", () => {
+        mainWindow = null;
+    });
 
     mainWindow.on("closed", () => {
         globalShortcut.unregisterAll();
         app.quit();
     });
 
-    mainWindow.onbeforeunload = (event) => { event.returnValue = false; };
+    mainWindow.onbeforeunload = (event) => {
+        event.returnValue = false;
+    };
 }
 
 // Initialize the app when Electron is ready.
@@ -65,38 +70,47 @@ app.whenReady().then(() => {
     try {
         app.allowRendererProcessReuse = false;
         initialize();
+
+        app.on("activate", () => {
+            if (BrowserWindow.getAllWindows().length === 0) {
+                initialize();
+            }
+        });
     } catch (error) {
-        throw new Error(`Initialization failed: ${error.toString()}`);
+        console.error(`Initialization failed: ${error.toString()}`);
+        app.quit();
     }
 });
 
-app.on("window-all-closed", () => { app.quit(); });
-
-app.on("before-quit", () => { });
-
-app.on("will-quit", () => { });
+app.on("window-all-closed", () => {
+    if (process.platform !== "darwin") {
+        app.quit();
+    }
+});
 
 // Handle the lifecycle events of the app.
-ipcMain.on('no-file-selected-dialog', async (_, message) => {
+async function showInfoDialog(message) {
     await dialog.showMessageBox(BrowserWindow.getFocusedWindow(), {
-        type: 'info',
-        title: 'Information',
-        message: message,
-    })
-})
+        type: "info",
+        message: message.info,
+    });
+}
 
-ipcMain.on('unsupported-file-dialog', async (_, message) => {
-    await dialog.showMessageBox(BrowserWindow.getFocusedWindow(), {
-        type: 'info',
-        title: 'Information',
-        message: message,
-    })
-})
-
-ipcMain.on('no-changes-dialog', async (_, message) => {
-    await dialog.showMessageBox(BrowserWindow.getFocusedWindow(), {
-        type: 'info',
-        title: 'Information',
-        message: message,
-    })
-})
+ipcMain.on("dialog", async (_, message) => {
+    if (message.action === "no-file-selected") {
+        showInfoDialog(message);
+    } else if (message.action === "unsupported-file") {
+        showInfoDialog(message);
+    } else if (message.action === "no-changes") {
+        showInfoDialog(message);
+    } else if (message.action === "dark-mode") {
+        if (message.isEnabled === true) {
+            nativeTheme.themeSource = "dark";
+        } else {
+            nativeTheme.themeSource = "light";
+        }
+        return nativeTheme.shouldUseDarkColors;
+    } else {
+        console.error(`Unknown dialog action: ${message.action}`);
+    }
+});
