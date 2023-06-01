@@ -13,11 +13,8 @@
                 }
             ]
         },
-        "darkMode": true,
-        "supportedExtensions": [
-            "wav",
-            "mp3"
-        ]
+        "supportedExtensions": ["wav", "mp3"],
+        "darkModeEnabled": true
     },
     "aboutUrl": "https://github.com/bekirbakar/stt-app",
     "pythonInterpreter": "/opt/miniconda3/envs/whisper/bin/python",
@@ -26,10 +23,7 @@
         {
             "id": "openai/whisper",
             "name": "openai/whisper",
-            "models": [
-                "tiny",
-                "base"
-            ]
+            "models": ["tiny", "base"]
         }
     ]
 }
