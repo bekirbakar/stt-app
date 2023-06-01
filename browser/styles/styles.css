@@ -1,8 +1,11 @@
 :root {
-    --primary-color: #095b0c;
-    --primary-color-hover: #064907;
-    --border-color: #ddd;
+    --primary-color: rgb(9, 91, 12);
+    --primary-color-hover: rgb(6, 73, 7);
+    --border-color: rgb(6, 73, 7);
     --transition-ease: 0.5s ease;
+    --common-padding: 10px;
+    --common-border-radius: 10px;
+    color-scheme: light dark;
 }
 
 /* Top Styles */
@@ -11,25 +14,62 @@ body {
     justify-content: center;
     align-items: flex-end;
     font-family: Arial, sans-serif;
-    background-color: #f0f0f0;
+    background-color: rgb(240, 240, 240);
     margin: 0;
     padding: 0;
     height: 100vh;
     width: 100vw;
     overflow: hidden;
-    overflow-x: hidden;
-    overflow-y: hidden;
-    font-size: 16px;
+    font-size: 1rem;
     font-weight: 400;
     line-height: 1.5;
-    color: #212529;
+    color: rgb(33, 37, 41);
     text-align: left;
+}
+
+@media (prefers-color-scheme: light) {
+    body {
+        background: rgb(255, 255, 255);
+        color: rgb(0, 0, 0);
+    }
+}
+
+@media (prefers-color-scheme: dark) {
+    body {
+        background: rgb(0, 0, 0);
+        color: rgb(255, 255, 255);
+    }
 }
 
 .flex-row {
     display: flex;
     flex-direction: row;
     align-items: center;
+}
+
+.selector,
+.input-file,
+.text-area {
+    padding: var(--common-padding);
+    border-radius: var(--common-border-radius);
+    border: 1px solid var(--border-color);
+    width: 100%;
+    resize: none;
+}
+
+.selector:hover,
+.input-file:hover,
+.text-area:hover {
+    border: 1px solid var(--primary-color-hover);
+}
+
+.text-area {
+    margin-top: var(--common-padding);
+    margin-bottom: 14px;
+    max-width: 100%;
+    height: 200px;
+    box-sizing: border-box;
+    font-size: 0.75rem;
 }
 
 /* Sidebar Styles */
@@ -77,7 +117,7 @@ body {
 /* Button Styles */
 .button {
     background-color: var(--primary-color);
-    color: #ffffff;
+    color: rgb(255, 255, 255);
     padding: 10px;
     border: none;
     border-radius: 10px;
@@ -97,8 +137,8 @@ body {
     flex-direction: column;
     align-items: center;
     background-color: var(--primary-color);
-    transition: var(--transition-ease);
-    color: #ffffff;
+    transition: background var(--transition-ease);
+    color: rgb(255, 255, 255);
     padding: 10px;
     cursor: pointer;
     width: 100%;
@@ -141,6 +181,13 @@ body {
     margin-top: 10px;
 }
 
+.uploaded-file-label {
+    display: inline-block;
+    padding: 10px;
+    background: var(--border-color);
+    cursor: pointer;
+}
+
 #drop-zone {
     flex-direction: column;
     flex: 3;
@@ -151,31 +198,6 @@ body {
     border: 5px dashed var(--border-color);
     padding: 20px;
     cursor: pointer;
-}
-
-select,
-input[type="file"],
-textarea {
-    padding: 10px;
-    border-radius: 10px;
-    border: 1px solid var(--border-color);
-    width: 100%;
-    resize: none;
-}
-
-textarea {
-    margin-top: 10px;
-    margin-bottom: 14px;
-    max-width: 100%;
-    height: 200px;
-    box-sizing: border-box;
-    font-size: 12px;
-}
-
-select:hover,
-input[type="file"]:hover,
-textarea:hover {
-    border: 1px solid var(--primary-color-hover);
 }
 
 #result {
@@ -190,13 +212,6 @@ textarea:hover {
     align-items: center;
 }
 
-.uploaded-file-label {
-    display: inline-block;
-    padding: 10px;
-    background: var(--border-color);
-    cursor: pointer;
-}
-
 /* Form Styles */
 #settings-form,
 #configuration-form {
@@ -206,8 +221,8 @@ textarea:hover {
     justify-content: space-between;
 }
 
-#settings-form>div,
-#configuration-form>div {
+#settings-form > div,
+#configuration-form > div {
     margin-bottom: 20px;
 }
 
@@ -222,11 +237,11 @@ dialog {
     height: 75vh;
     border: 5px solid var(--border-color);
     border-radius: 10px;
-    box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.1);
+    box-shadow: 0px 0px 15px rgb(0, 0, 0);
 }
 
 dialog::backdrop {
-    background: rgba(0, 0, 0, 0.5);
+    background: rgb(0, 0, 0);
     backdrop-filter: blur(10px);
 }
 
