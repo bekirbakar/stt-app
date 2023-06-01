@@ -1,201 +1,200 @@
 "use strict";
 
-const fs = require("fs");
 const { shell, ipcRenderer } = require("electron");
 
-const utilities = require("./js/utilities.js");
-const inference = require("./js/inference.js");
-const { languageData } = require("./js/ui.js");
+const { inference } = require("./js/inference.js");
+const { Localizer } = require("./js/localization.js");
+const { Configuration } = require("./js/configuration.js");
+const {
+    getElementById,
+    toggleClassValue,
+    toggleFileUploadAreaBackgroundColor,
+    truncateFilename,
+} = require("./js/helpers.js");
 
-const configuration = utilities.getConfiguration();
+const configuration = new Configuration();
+const localizer = new Localizer(configuration.get("settings.languages.selected"));
 
-let li = configuration.settings.languages.selected;
+const settingsDialog = getElementById("settings-dialog");
+const languageSelector = getElementById("language-selector");
+
+function setMainLanguageDependentText() {
+    localizer.updateUIText("settings-button");
+    localizer.updateUIText("about-button");
+    localizer.updateUIText("asr-engine-selector-label");
+    localizer.updateUIText("asr-model-selector-label");
+    localizer.updateUIText("uploaded-file-label");
+    localizer.updateUIText("configuration-button");
+    localizer.updateUIText("start-button");
+    localizer.updateUIText("clear-button");
+    localizer.updateUIText("copy-button");
+    localizer.updateUIText("dark-mode-label");
+    localizer.updateUIText("language-label");
+    localizer.updateUIText("settings-save-button");
+    localizer.updateUIText("configuration-save-button");
+    localizer.updateUIText("settings-exit-button");
+    localizer.updateUIText("configuration-dave-button");
+    localizer.updateUIText("configuration-exit-button");
+}
 
 // Main Content
 window.onload = function () {
-    fetch(utilities.configurationFilePath)
-        .then((response) => response.json())
-        .then((configuration) => {
-            // General Configuration
-            document.getElementById("sidebar").className = "";
-            document.getElementById("sidebar-toggle-icon").innerText = "⬅";
-            document.getElementById('settings-button').textContent = languageData[li].sidebarSettingsButton;
-            document.getElementById('about-button').textContent = languageData[li].sidebarAboutButton;
-            document.getElementById('asr-engine-selector-label').textContent = languageData[li].asrEngineSelectorLabel;
-            document.getElementById('asr-model-selector-label').textContent = languageData[li].asrModelSelectorLabel;
-            document.getElementById('uploaded-file-label').textContent = languageData[li].uploadedFileLabel;
-            document.getElementById('configuration-button').textContent = languageData[li].configurationButton;
-            document.getElementById('start-button').textContent = languageData[li].startButton;
-            document.getElementById('clear-button').textContent = languageData[li].clearButton;
-            document.getElementById('copy-button').textContent = languageData[li].copyButton;
-            document.getElementById('settings-title').textContent = languageData[li].settingsTitle;
-            document.getElementById('configuration-title').textContent = languageData[li].configurationTitle;
-            document.getElementById('language-label').textContent = languageData[li].languageLabel;
-            document.getElementById('settings-save-button').textContent = languageData[li].settingsSaveButton;
-            document.getElementById('settings-exit-button').textContent = languageData[li].exitButton;
-            document.getElementById('configuration-save-button').textContent = languageData[li].configurationSaveButton;
-            document.getElementById('configuration-exit-button').textContent = languageData[li].exitButton;
+    getElementById("sidebar").className = "";
+    getElementById("sidebar-toggle-icon").innerText = "⬅";
 
-            // Language Selector
-            const languageSelector = document.getElementById("language-selector");
-            configuration.settings.languages.supported.forEach((language) => {
+    setMainLanguageDependentText();
+
+    ipcRenderer.send("dialog", {
+        action: "dark-mode",
+        isEnabled: configuration.get("settings.darkModeEnabled"),
+    });
+
+    // Sidebar
+    getElementById("sidebar-toggle-button").addEventListener("click", function () {
+        toggleClassValue("sidebar", "collapsed");
+        toggleClassValue("main-content", "collapsed");
+        this.innerText = getElementById("sidebar").classList.contains("collapsed") ? "➡" : "⬅";
+    });
+
+    // Language
+    configuration.get("settings.languages.supported").forEach((language) => {
+        const option = document.createElement("option");
+        option.value = language.id;
+        option.text = language.name;
+        languageSelector.appendChild(option);
+    });
+
+    // Engine and Model Selectors
+    const engineSelector = getElementById("engine");
+
+    configuration.get("engines").forEach((engine) => {
+        const option = document.createElement("option");
+        option.value = engine.id;
+        option.text = engine.name;
+        engineSelector.appendChild(option);
+    });
+
+    engineSelector.addEventListener("change", function () {
+        const selectedEngine = configuration.get("engines").find((engine) => engine.id === this.value);
+        const modelSelector = getElementById("model");
+
+        if (selectedEngine.models) {
+            selectedEngine.models.forEach((model) => {
                 const option = document.createElement("option");
-                option.value = language.id;
-                option.text = language.name;
-                languageSelector.appendChild(option);
+                option.value = model;
+                option.text = model;
+                modelSelector.appendChild(option);
             });
+        }
+    });
 
-            // Engine and Model Selectors
-            const engineSelector = document.getElementById("engine");
-            configuration.engines.forEach((engine) => {
-                const option = document.createElement("option");
-                option.value = engine.id;
-                option.text = engine.name;
-                engineSelector.appendChild(option);
-            });
-
-            engineSelector.addEventListener("change", function () {
-                const selectedEngine = configuration.engines.find((engine) => engine.id === this.value);
-                const modelSelector = document.getElementById("model");
-
-                if (selectedEngine.models) {
-                    selectedEngine.models.forEach((model) => {
-                        const option = document.createElement("option");
-                        option.value = model;
-                        option.text = model;
-                        modelSelector.appendChild(option);
-                    });
-                }
-            });
-
-            engineSelector.dispatchEvent(new Event("change"));
-        })
-        .catch((error) => console.error(error));
+    engineSelector.dispatchEvent(new Event("change"));
 };
 
-// Sidebar
-document.getElementById("sidebar-toggle-button").addEventListener("click", function () {
-    if (sidebar.className === "collapsed") {
-        sidebar.className = "";
-
-        document.getElementById("main-content").className = "";
-        this.innerText = "⬅";
-    } else {
-        sidebar.className = "collapsed";
-        document.getElementById("main-content").className = "collapsed";
-        this.innerText = "➡";
-    }
-});
-
 // Settings
-document.getElementById("settings-button").addEventListener("click", function () {
-    document.getElementById("language-selector").value = li;
-    document.getElementById("settings-dialog").showModal();
+getElementById("settings-button").addEventListener("click", function () {
+    getElementById("dark-mode-enabled").checked = configuration.get("settings.darkModeEnabled");
+    languageSelector.value = configuration.get("settings.languages.selected");
+
+    settingsDialog.showModal();
 });
 
-document.getElementById("settings-save-button").addEventListener("click", function () {
-    const selectedLanguage = document.getElementById("language-selector").value;
-    configuration.settings.languages.selected = selectedLanguage;
-    document.getElementById("language-selector").value = selectedLanguage;
-    document.getElementById("settings-dialog").close();
+getElementById("settings-save-button").addEventListener("click", function () {
+    let hasChanges = false;
+    if (getElementById("language-selector").value !== configuration.get("settings.languages.selected")) {
+        hasChanges = true;
+        localizer.setLanguage(getElementById("language-selector").value);
+        configuration.set("settings.languages.selected", getElementById("language-selector").value);
 
-    utilities.updateConfiguration(configuration);
+        setMainLanguageDependentText();
+    }
+
+    if (getElementById("dark-mode-enabled").checked !== configuration.get("settings.darkModeEnabled")) {
+        hasChanges = true;
+        configuration.set("settings.darkModeEnabled", getElementById("dark-mode-enabled").checked);
+        ipcRenderer.send("dialog", {
+            action: "dark-mode",
+            isEnabled: getElementById("dark-mode-enabled").checked,
+        });
+    }
+
+    if (!hasChanges) {
+        ipcRenderer.send("dialog", { action: "no-changes", info: localizer.localizeDialog("noChanges") });
+    }
+
+    settingsDialog.close();
 });
 
 // About
-document.getElementById("about-button").addEventListener("click", function () {
-    shell.openExternal(configuration.aboutUrl);
+getElementById("about-button").addEventListener("click", function () {
+    shell.openExternal(configuration.get("aboutUrl"));
 });
 
-const SELECTED_COLOR = "#cccccc";
-const DEFAULT_COLOR = "#ffffff";
-
-let selectedFile = null;
-
-const dropZone = document.getElementById("drop-zone");
-const resultBox = document.getElementById("result-box");
-const fileInput = document.getElementById("uploaded-file");
-const fileLabel = document.querySelector(".uploaded-file-label");
+// Inference
+const dropZone = getElementById("drop-zone");
+const resultBox = getElementById("result-box");
+const fileInput = getElementById("uploaded-file");
+const uploadedFileLabel = document.querySelector(".uploaded-file-label");
 
 dropZone.addEventListener("dragover", function (e) {
     e.preventDefault();
-    utilities.changeBackgroundColor(this, SELECTED_COLOR);
+    toggleFileUploadAreaBackgroundColor(this);
 });
 
 dropZone.addEventListener("dragleave", function () {
-    utilities.changeBackgroundColor(this, DEFAULT_COLOR);
+    toggleFileUploadAreaBackgroundColor(this);
 });
 
 dropZone.addEventListener("drop", function (e) {
     e.preventDefault();
-    utilities.changeBackgroundColor(this, DEFAULT_COLOR);
+    toggleFileUploadAreaBackgroundColor(this);
     fileInput.files = e.dataTransfer.files;
-
-    selectedFile = utilities.setFileDetails(fileLabel, e.dataTransfer.files[0], li);
+    uploadedFileLabel.textContent = truncateFilename(e.dataTransfer.files[0].path);
 });
 
 fileInput.addEventListener("change", function () {
-    utilities.changeBackgroundColor(this, DEFAULT_COLOR);
-    selectedFile = utilities.setFileDetails(fileLabel, this.files[0], li);
+    toggleFileUploadAreaBackgroundColor(this);
+    uploadedFileLabel.textContent = truncateFilename(this.files[0].path);
 });
 
-document.getElementById("start-button").addEventListener("click", function () {
-    let isInferenceRunning = false;
+getElementById("start-button").addEventListener("click", function () {
+    const elements = { startButton: this, resultBox: resultBox };
 
-    if (!isInferenceRunning) {
-        if (selectedFile === null) {
-            ipcRenderer.send('no-file-selected-dialog', languageData[li].noFileSelected.toString());
-        } else if (!configuration.settings.supportedExtensions.includes(selectedFile.name.split(".").pop())) {
-            ipcRenderer.send('unsupported-file-dialog', languageData[li].unsupportedFile);
-        } else {
-            fs.access(selectedFile.path, fs.constants.F_OK, (error) => {
-                if (error) {
-                    ipcRenderer.send('file-not-found-dialog', languageData[li].fileNotFound);
-                } else {
-                    isInferenceRunning = true;
-
-                    resultBox.value = "";
-                    this.textContent = "Stop";
-                    this.style.backgroundColor = "red";
-
-                    inference.inference(configuration.pythonInterpreter, configuration.pythonScript, selectedFile.path)
-                        .then((result) => { resultBox.value = result; })
-                        .catch((error) => { console.error(error); })
-                        .finally(() => {
-                            isInferenceRunning = false;
-                            this.textContent = "Start";
-                            this.style.backgroundColor = "";
-                        });
-                }
-            });
-        }
-    }
+    inference(
+        fileInput.files,
+        configuration.get("settings.supportedExtensions"),
+        elements,
+        configuration.get("pythonInterpreter"),
+        configuration.get("pythonScript")
+    )
+        .then(() => {})
+        .catch((error) => {
+            if (error.type === "dialog") {
+                ipcRenderer.send("dialog", {
+                    action: "no-file-selected",
+                    info: localizer.localizeDialog("noFileSelected"),
+                });
+            }
+        });
 });
 
-document.getElementById("clear-button").addEventListener("click", function () {
+getElementById("clear-button").addEventListener("click", function () {
     resultBox.value = "";
     fileInput.value = "";
-    selectedFile = utilities.setFileDetails(fileLabel, null, li);
+    uploadedFileLabel.textContent = localizer.localize("uploaded-file-label");
 });
 
-document.getElementById("copy-button").addEventListener("click", function () {
+getElementById("copy-button").addEventListener("click", function () {
     resultBox.select();
     document.execCommand("copy");
 });
 
 // Configuration
-document.getElementById("configuration-button").addEventListener("click", function () {
-    const configurationDialog = document.getElementById("configuration-dialog");
+getElementById("configuration-button").addEventListener("click", function () {
+    const configurationDialog = getElementById("configuration-dialog");
     configurationDialog.showModal();
 });
 
-document.getElementById("configuration-save-button").addEventListener("click", function () {
-    let hasChanges = false;
-    let changesToSave = utilities.getConfiguration();
-
-    if (!hasChanges) {
-        ipcRenderer.send('no-changes-dialog', languageData[li].noChanges);
-    } else {
-        utilities.updateConfiguration(changesToSave);
-    }
+getElementById("configuration-save-button").addEventListener("click", function () {
+    ipcRenderer.send("dialog", { action: "no-changes", info: localizer.localizeDialog("noChanges") });
 });
