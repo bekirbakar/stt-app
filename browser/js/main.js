@@ -120,6 +120,8 @@ getElementById("settings-save-button").addEventListener("click", function () {
 
     if (!hasChanges) {
         ipcRenderer.send("dialog", { action: "no-changes", info: localizer.localizeDialog("noChanges") });
+    } else {
+        configuration.save();
     }
 
     settingsDialog.close();
