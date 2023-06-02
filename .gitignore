@@ -13,5 +13,4 @@ package-lock.json
 __pycache__/
 
 # Temporary
-backend/*
-!backend/inference.py
+docker/
