@@ -12,5 +12,8 @@ package-lock.json
 # Python
 __pycache__/
 
+# Logs
+*.log
+
 # Temporary
 docker/
