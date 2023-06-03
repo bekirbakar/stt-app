@@ -18,12 +18,17 @@
     },
     "aboutUrl": "https://github.com/bekirbakar/stt-app",
     "pythonInterpreter": "/opt/miniconda3/envs/whisper/bin/python",
-    "pythonScript": "backend/inference.py",
+    "pythonScript": "backend/source/main.py",
     "engines": [
         {
             "id": "openai/whisper",
             "name": "openai/whisper",
             "models": ["tiny", "base"]
+        },
+        {
+            "id": "guillaumekln/faster-whisper",
+            "name": "guillaumekln/faster-whisper",
+            "models": ["tiny", "base", "small"]
         }
     ]
 }

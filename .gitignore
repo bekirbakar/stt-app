@@ -12,6 +12,8 @@ package-lock.json
 # Python
 __pycache__/
 
+# Logs
+*.log
+
 # Temporary
-backend/*
-!backend/inference.py
+docker/

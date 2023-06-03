@@ -4,10 +4,13 @@ const { readFileSync, writeFileSync } = require("fs");
 const path = require("path");
 
 class Configuration {
-    constructor(pathToFile = "../../configuration/configuration.json") {
-        this.pathToFile = path.resolve(__dirname, pathToFile);
+    constructor(from = null) {
         this.configuration = {};
-        this.load();
+
+        if (from) {
+            this.pathToFile = path.resolve(__dirname, from);
+            this.load();
+        }
     }
 
     load() {

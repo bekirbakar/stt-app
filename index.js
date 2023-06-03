@@ -52,6 +52,10 @@ function initialize() {
     });
 
     mainWindow.on("close", () => {
+        mainWindow.onbeforeunload = (event) => {
+            event.returnValue = false;
+        };
+
         mainWindow = null;
     });
 
@@ -59,10 +63,6 @@ function initialize() {
         globalShortcut.unregisterAll();
         app.quit();
     });
-
-    mainWindow.onbeforeunload = (event) => {
-        event.returnValue = false;
-    };
 }
 
 // Initialize the app when Electron is ready.
@@ -97,13 +97,7 @@ async function showInfoDialog(message) {
 }
 
 ipcMain.on("dialog", async (_, message) => {
-    if (message.action === "no-file-selected") {
-        showInfoDialog(message);
-    } else if (message.action === "unsupported-file") {
-        showInfoDialog(message);
-    } else if (message.action === "no-changes") {
-        showInfoDialog(message);
-    } else if (message.action === "dark-mode") {
+    if (message.action === "dark-mode") {
         if (message.isEnabled === true) {
             nativeTheme.themeSource = "dark";
         } else {
@@ -111,6 +105,6 @@ ipcMain.on("dialog", async (_, message) => {
         }
         return nativeTheme.shouldUseDarkColors;
     } else {
-        console.error(`Unknown dialog action: ${message.action}`);
+        showInfoDialog(message);
     }
 });
