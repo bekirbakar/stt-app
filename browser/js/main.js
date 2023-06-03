@@ -2,7 +2,9 @@
 
 const { shell, ipcRenderer } = require("electron");
 
-const { inference } = require("./js/inference.js");
+const { runAsrModel } = require("./js/inference.js");
+const { getState, setState } = require("./js/state.js");
+
 const { Localizer } = require("./js/localization.js");
 const { Configuration } = require("./js/configuration.js");
 const {
@@ -12,7 +14,9 @@ const {
     truncateFilename,
 } = require("./js/helpers.js");
 
-const configuration = new Configuration();
+const configuration = new Configuration("../../configuration/configuration.json");
+const backendConfiguration = new Configuration();
+
 const localizer = new Localizer(configuration.get("settings.languages.selected"));
 
 const settingsDialog = getElementById("settings-dialog");
@@ -136,6 +140,7 @@ getElementById("about-button").addEventListener("click", function () {
 const dropZone = getElementById("drop-zone");
 const resultBox = getElementById("result-box");
 const fileInput = getElementById("uploaded-file");
+const startButton = getElementById("start-button");
 const uploadedFileLabel = document.querySelector(".uploaded-file-label");
 
 dropZone.addEventListener("dragover", function (e) {
@@ -159,25 +164,58 @@ fileInput.addEventListener("change", function () {
     uploadedFileLabel.textContent = truncateFilename(this.files[0].path);
 });
 
-getElementById("start-button").addEventListener("click", function () {
-    const elements = { startButton: this, resultBox: resultBox };
+startButton.addEventListener("click", function () {
+    backendConfiguration.set("engine", getElementById("engine").value);
+    backendConfiguration.set("modelType", getElementById("model").value);
 
-    inference(
-        fileInput.files,
-        configuration.get("settings.supportedExtensions"),
-        elements,
-        configuration.get("pythonInterpreter"),
-        configuration.get("pythonScript")
-    )
-        .then(() => {})
-        .catch((error) => {
-            if (error.type === "dialog") {
-                ipcRenderer.send("dialog", {
-                    action: "no-file-selected",
-                    info: localizer.localizeDialog("noFileSelected"),
-                });
-            }
-        });
+    backendConfiguration.set("modelPath", "");
+    backendConfiguration.set("device", "cpu");
+    backendConfiguration.set("computeType", "int8");
+
+    backendConfiguration.set("pathToPythonScript", configuration.get("pythonScript"));
+    backendConfiguration.set("pathToPythonInterpreter", configuration.get("pythonInterpreter"));
+    backendConfiguration.set("supportedExtensions", configuration.get("settings.supportedExtensions"));
+
+    try {
+        backendConfiguration.set("pathToAudioFile", fileInput.files[0].path);
+    } catch (error) {
+        ipcRenderer.send("dialog", { action: "no-file-selected", info: localizer.localizeDialog("noFileSelected") });
+        return;
+    }
+
+    if (
+        !backendConfiguration.configuration.supportedExtensions.includes(
+            backendConfiguration.configuration.pathToAudioFile.split(".").pop()
+        )
+    ) {
+        ipcRenderer.send("dialog", { action: "unsupported-file", info: localizer.localizeDialog("unsupportedFile") });
+        return;
+    }
+    const state = getState();
+    if (!state.isInferenceRunning) {
+        setState({ isInferenceRunning: true });
+
+        resultBox.value = "";
+        startButton.textContent = "Stop";
+        startButton.style.backgroundColor = "red";
+
+        runAsrModel(backendConfiguration.configuration)
+            .then((result) => {
+                resultBox.value = result;
+            })
+            .catch((error) => {
+                console.error(error);
+            })
+            .finally(() => {
+                setState({ isInferenceRunning: false });
+                startButton.textContent = "Start";
+                startButton.style.backgroundColor = "";
+            });
+    } else {
+        setState({ isInferenceRunning: false });
+        startButton.textContent = "Start";
+        startButton.style.backgroundColor = "";
+    }
 });
 
 getElementById("clear-button").addEventListener("click", function () {
