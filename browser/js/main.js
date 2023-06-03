@@ -82,6 +82,8 @@ window.onload = function () {
         const selectedEngine = configuration.get("engines").find((engine) => engine.id === this.value);
         const modelSelector = getElementById("model");
 
+        modelSelector.innerHTML = "";
+
         if (selectedEngine.models) {
             selectedEngine.models.forEach((model) => {
                 const option = document.createElement("option");
