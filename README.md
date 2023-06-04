@@ -10,6 +10,7 @@ A cross-platform desktop application for speech transcription.
 ## Supported Models
 
 - Whisper
+- Faster Whisper
 
 ## Setup and Usage
 
