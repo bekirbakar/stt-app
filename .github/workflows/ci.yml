@@ -1,0 +1,53 @@
+# .github/workflows/ci.yml
+name: CI
+
+on:
+    push:
+        branches: [main]
+    pull_request:
+        branches: [main]
+
+jobs:
+    backend:
+        runs-on: ubuntu-latest
+
+        steps:
+            - uses: actions/checkout@v2
+
+            - name: Setup Python
+              uses: actions/setup-python@v2
+              with:
+                  python-version: 3.11.3
+
+            - name: Cache Python Dependencies
+              uses: actions/cache@v2
+              with:
+                  path: ~/.cache/pip
+                  key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+                  restore-keys: |
+                      ${{ runner.os }}-pip-
+
+            - name: Install Dependencies
+              run: |
+                  cd backend
+                  python -m pip install --upgrade pip
+                  if [ -f requirements.txt ]; then 
+                    pip wheel --wheel-dir /tmp/wheels -r requirements.txt
+                    pip install --no-index --find-links=/tmp/wheels -r requirements.txt
+                  fi
+
+            - name: Lint (flake8)
+              run: |
+                  cd backend
+                  pip install flake8
+                  flake8 . --exclude=venv* --statistics --max-line-length=119
+
+            - name: Install Extras (ffmpeg)
+              run: |
+                  sudo apt update
+                  sudo apt install -y ffmpeg
+
+            - name: Test (unittest)
+              run: |
+                  cd backend
+                  python -m unittest discover -s tests

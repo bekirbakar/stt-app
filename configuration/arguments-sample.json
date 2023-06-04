@@ -1,0 +1,4 @@
+{
+    "engine": "guillaumekln/faster-whisper",
+    "modelType": "tiny"
+}

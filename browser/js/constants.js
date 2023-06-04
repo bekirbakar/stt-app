@@ -1,9 +1,7 @@
 "use strict";
 
-const SELECTED_COLOR = "#cccccc";
-// const DEFAULT_COLOR = require("./configuration.js").getConfiguration().settings.darkModeEnabled ? "#333333" : "#ffffff";
-
 const DEFAULT_COLOR = "#333333";
+const SELECTED_COLOR = "#cccccc";
 
 module.exports = {
     SELECTED_COLOR,

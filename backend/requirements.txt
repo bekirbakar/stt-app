@@ -1,2 +1,2 @@
-faster-whisper
 git+https://github.com/openai/whisper.git
+faster-whisper
