@@ -17,7 +17,7 @@ class EngineInference:
         if engine_class := engine_factory.get(arguments.engine):
             return engine_class(**arguments.__dict__)
         else:
-            raise ValueError(f'Invalid engine: {arguments.engine}')
+            raise ValueError(f'Invalid Engine: {arguments.engine}')
 
     def run(self, path_to_audio_file) -> str:
         return json.dumps(self.engine.process(path_to_audio_file))

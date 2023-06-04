@@ -18,7 +18,7 @@ class ArgumentParser:
             with open(path_to_file, 'r') as file:
                 argument_parser = json.load(file)
         except json.JSONDecodeError:
-            cls.logger.error(f'Invalid JSON file: {path_to_file}')
+            cls.logger.error(f'Invalid JSON File: {path_to_file}')
             raise
         return cls(**argument_parser)
 
@@ -27,6 +27,6 @@ class ArgumentParser:
         try:
             argument_parser = json.loads(json_string)
         except json.JSONDecodeError:
-            cls.logger.error(f'Invalid JSON string: {json_string}')
+            cls.logger.error(f'Invalid JSON String: {json_string}')
             raise
         return cls(**argument_parser)
