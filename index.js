@@ -7,8 +7,8 @@ const path = require("path");
 const { app, ipcMain, dialog, BrowserWindow, globalShortcut, nativeTheme } = require("electron");
 
 // Import and configure the module for live-reloading the app during development.
-// const electronReload = require("electron-reload");
-// electronReload(__dirname, { electron: path.join(__dirname, "node_modules", ".bin", "electron") });
+const electronReload = require("electron-reload");
+electronReload(__dirname, { electron: path.join(__dirname, "node_modules", ".bin", "electron") });
 
 let mainWindow = null;
 
