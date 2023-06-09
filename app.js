@@ -11,7 +11,7 @@ const { app, ipcMain, dialog, BrowserWindow, globalShortcut, nativeTheme } = req
 // const electronReload = require("electron-reload");
 // electronReload(__dirname, { electron: join(__dirname, "node_modules", ".bin", "electron") });
 
-const pathToBackendExecutable = resolve(__dirname, "packages/backend");
+const pathToBackendExecutable = resolve(__dirname, "packages/fake_text_generator");
 
 let mainWindow = null;
 let currentEvent = null;
