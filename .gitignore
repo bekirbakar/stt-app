@@ -1,12 +1,15 @@
 # Editor Generated Files
 .vscode/
 
+# Python eggs
+*.egg-info/
+
 # Build Files
 **/build/*
+**/dist/*
 
 # Logs
 *.log
 
 # Temporary Ignore
-backend-sample/
 docker/
