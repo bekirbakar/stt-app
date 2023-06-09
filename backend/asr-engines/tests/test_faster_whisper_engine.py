@@ -3,11 +3,11 @@ import string
 import unittest
 from unittest.mock import patch
 
-from engines.enums import ComputeType, DeviceType, ModelType
-from engines.faster_whisper_engine import FasterWhisperEngine
+from asr_engines.enums import ComputeType, DeviceType, ModelType
+from asr_engines.faster_whisper_engine import FasterWhisperEngine
 
 current_directory = os.path.dirname(os.path.abspath(__file__))
-path_to_audio_file = os.path.join(current_directory, '../../data/audio-samples/jfk.wav')
+path_to_audio_file = os.path.join(current_directory, '../../../data/audio-samples/jfk.wav')
 expected_transcription = ("and so my fellow americans ask not what your country can do for you ask what you "
                           "can do for your country")
 
@@ -17,7 +17,7 @@ class TestFasterWhisperEngine(unittest.TestCase):
         self.engine = FasterWhisperEngine(model_type=ModelType.TINY.value, compute_type=ComputeType.INT8.value,
                                           device_type=DeviceType.CPU.value)
 
-    @patch('engines.faster_whisper_engine.WhisperModel', autospec=True)
+    @patch('asr_engines.faster_whisper_engine.WhisperModel', autospec=True)
     def test_get_model(self, mock_model):
         self.engine.get_model()
         mock_model.assert_called_once_with(model_size_or_path=ModelType.TINY.value, device=DeviceType.CPU.value,

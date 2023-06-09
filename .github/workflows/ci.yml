@@ -8,7 +8,7 @@ on:
         branches: [main]
 
 jobs:
-    backend:
+    asr-engines:
         runs-on: ubuntu-latest
 
         steps:
@@ -17,7 +17,7 @@ jobs:
             - name: Setup Python
               uses: actions/setup-python@v2
               with:
-                  python-version: 3.11.3
+                  python-version: 3.11
 
             - name: Cache Python Dependencies
               uses: actions/cache@v2
@@ -29,7 +29,7 @@ jobs:
 
             - name: Install Dependencies
               run: |
-                  cd backend
+                  cd backend/asr-engines
                   python -m pip install --upgrade pip
                   if [ -f requirements.txt ]; then 
                     pip wheel --wheel-dir /tmp/wheels -r requirements.txt
@@ -38,7 +38,7 @@ jobs:
 
             - name: Lint (flake8)
               run: |
-                  cd backend
+                  cd backend/asr-engines
                   pip install flake8
                   flake8 . --exclude=venv* --statistics --max-line-length=119
 
@@ -49,5 +49,5 @@ jobs:
 
             - name: Test (unittest)
               run: |
-                  cd backend
+                  cd backend/asr-engines
                   python -m unittest discover -s tests

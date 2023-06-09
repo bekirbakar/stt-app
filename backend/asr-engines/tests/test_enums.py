@@ -1,6 +1,6 @@
 import unittest
 
-from engines.enums import ModelType, ComputeType, DeviceType
+from asr_engines.enums import ComputeType, DeviceType, ModelType
 
 
 class TestEnums(unittest.TestCase):

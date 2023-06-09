@@ -1,14 +1,14 @@
 "use strict";
 
+const { resolve } = require("path");
 const { readFileSync, writeFileSync } = require("fs");
-const path = require("path");
 
-class Configuration {
+class ConfigurationManager {
     constructor(from = null) {
         this.configuration = {};
 
         if (from) {
-            this.pathToFile = path.resolve(__dirname, from);
+            this.pathToFile = resolve(__dirname, from);
             this.load();
         }
     }
@@ -18,7 +18,7 @@ class Configuration {
             const rawData = readFileSync(this.pathToFile);
             this.configuration = JSON.parse(rawData);
         } catch (error) {
-            console.error(`Error reading configuration file: ${error}`);
+            console.error(`Error reading the file: ${error}`);
         }
     }
 
@@ -34,7 +34,7 @@ class Configuration {
                 return true;
             }
         } catch (error) {
-            console.error(`Error writing configuration file: ${error}`);
+            console.error(`Error writing the file: ${error}`);
             return false;
         }
     }
@@ -60,4 +60,4 @@ class Configuration {
     }
 }
 
-module.exports = { Configuration };
+module.exports = { ConfigurationManager };

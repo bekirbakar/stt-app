@@ -1,19 +1,15 @@
-# OS generated files.
-.DS_Store
-
-# Editor generated files.
-.idea/
+# Editor Generated Files
 .vscode/
 
-# Node
-node_modules/
-package-lock.json
+# Python eggs
+*.egg-info/
 
-# Python
-__pycache__/
+# Build Files
+**/build/*
+**/dist/*
 
 # Logs
 *.log
 
-# Temporary
+# Temporary Ignore
 docker/

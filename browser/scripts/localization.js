@@ -31,6 +31,10 @@ const mainLanguageDependentText = {
         en: "Start",
         tr: "Başlat",
     },
+    stopButton: {
+        en: "Stop",
+        tr: "Durdur",
+    },
     clearButton: {
         en: "Clear",
         tr: "Temizle",
@@ -55,7 +59,6 @@ const mainLanguageDependentText = {
         en: "Exit",
         tr: "Çıkış",
     },
-
     configurationSaveButton: {
         en: "Save",
         tr: "Kaydet",
