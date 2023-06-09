@@ -5,13 +5,22 @@
 
 const { join, resolve } = require("path");
 const { spawn } = require("child_process");
+const isDevelopment = require("electron-is-dev");
 const { app, ipcMain, dialog, BrowserWindow, globalShortcut, nativeTheme } = require("electron");
 
-// Import and configure the module for live-reloading the app during development.
-// const electronReload = require("electron-reload");
-// electronReload(__dirname, { electron: join(__dirname, "node_modules", ".bin", "electron") });
+let pathToBackendExecutable = null;
+if (isDevelopment) {
+    require("electron-reload")(__dirname, {
+        electron: require(`${__dirname}/node_modules/electron`),
+    });
 
-const pathToBackendExecutable = resolve(__dirname, "packages/fake_text_generator");
+    const electronReload = require("electron-reload");
+    electronReload(__dirname, { electron: join(__dirname, "node_modules", ".bin", "electron") });
+
+    pathToBackendExecutable = resolve(__dirname, "packages/fake_text_generator");
+} else {
+    pathToBackendExecutable = resolve(process.resourcesPath, "app.asar.unpacked", "packages/fake_text_generator");
+}
 
 let mainWindow = null;
 let currentEvent = null;
