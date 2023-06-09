@@ -1,7 +1,5 @@
 "use strict";
 
-const { SELECTED_COLOR, DEFAULT_COLOR } = require("./constants.js");
-
 function getElementById(id) {
     return document.getElementById(id);
 }
@@ -9,15 +7,6 @@ function getElementById(id) {
 function toggleClassValue(elementId, className) {
     const element = getElementById(elementId);
     element.classList.toggle(className);
-}
-
-function toggleFileUploadAreaBackgroundColor(element) {
-    if (!(element instanceof Element)) {
-        console.error(`Invalid element: expected instance of Element, got ${typeof element}`);
-        return;
-    }
-
-    element.style.backgroundColor = element.style.backgroundColor === SELECTED_COLOR ? DEFAULT_COLOR : SELECTED_COLOR;
 }
 
 function truncateFilename(filename, maxLength = 75) {
@@ -48,7 +37,6 @@ function stringToCamelCase(str) {
 module.exports = {
     getElementById,
     toggleClassValue,
-    toggleFileUploadAreaBackgroundColor,
     truncateFilename,
     stringToCamelCase,
 };
