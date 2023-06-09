@@ -1,19 +1,12 @@
-# OS generated files.
-.DS_Store
-
-# Editor generated files.
-.idea/
+# Editor Generated Files
 .vscode/
 
-# Node
-node_modules/
-package-lock.json
-
-# Python
-__pycache__/
+# Build Files
+**/build/*
 
 # Logs
 *.log
 
-# Temporary
+# Temporary Ignore
+backend-sample/
 docker/
