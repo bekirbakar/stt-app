@@ -1,5 +1,7 @@
 "use strict";
 
+const pidusage = require("pidusage");
+
 function getElementById(id) {
     return document.getElementById(id);
 }
@@ -34,9 +36,34 @@ function stringToCamelCase(str) {
         .join("");
 }
 
+function processUsageStatistics(processId, startTime) {
+    return new Promise((resolve, reject) => {
+        pidusage(processId, function (error, statistics) {
+            if (error) {
+                return reject(error);
+            }
+            // Elapsed time since the process was spawned in minutes.
+            const elapsedTime = `${((Date.now() - startTime) / (1000 * 60)).toFixed(1)} Minutes`;
+
+            // Memory usage in mega bytes.
+            const memoryUsage = `${(statistics.memory / 1024 / 1024).toFixed(1)} MB`;
+
+            // CPU usage in percentage.
+            const cpuUsage = `${statistics.cpu.toFixed(1)}%`;
+
+            resolve({
+                elapsedTime: elapsedTime,
+                memoryUsage: memoryUsage,
+                cpuUsage: cpuUsage,
+            });
+        });
+    });
+}
+
 module.exports = {
     getElementById,
     toggleClassValue,
     truncateFilename,
     stringToCamelCase,
+    processUsageStatistics,
 };

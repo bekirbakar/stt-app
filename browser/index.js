@@ -267,7 +267,14 @@ ipcRenderer.on("inference-output", (_, result) => {
     setState({ isInferenceRunning: false });
     startButton.textContent = "Start";
     startButton.style.backgroundColor = "";
-    resultBox.value = JSON.stringify(result);
+
+    const parsedResult = JSON.parse(result);
+
+    resultBox.value =
+        `Elapsed Time: ${parsedResult.elapsedTime}\n` +
+        `Memory Usage: ${parsedResult.memoryUsage}\n` +
+        `CPU Usage: ${parsedResult.cpuUsage}\n\n` +
+        `Transcription: ${parsedResult.data}`;
 });
 
 getElementById("clear-button").addEventListener("click", function () {

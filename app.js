@@ -6,7 +6,9 @@
 const { join, resolve } = require("path");
 const { spawn } = require("child_process");
 const isDevelopment = require("electron-is-dev");
-const { app, ipcMain, dialog, BrowserWindow, globalShortcut, nativeTheme } = require("electron");
+const { app, ipcMain, dialog, BrowserWindow, globalShortcut, nativeTheme, Menu } = require("electron");
+
+const { processUsageStatistics } = require("./browser/scripts/helpers.js");
 
 let pathToBackendExecutable = null;
 if (isDevelopment) {
@@ -25,6 +27,39 @@ if (isDevelopment) {
 let mainWindow = null;
 let currentEvent = null;
 let backendProcess = null;
+let inferenceStartTime = null;
+
+const isMac = process.platform === "darwin";
+
+const menuBarTemplate = [
+    ...(isMac
+        ? [
+              {
+                  label: app.name,
+                  submenu: [
+                      { role: "about" },
+                      { type: "separator" },
+                      { role: "services" },
+                      { type: "separator" },
+                      { role: "hide" },
+                      { role: "hideOthers" },
+                      { role: "unhide" },
+                      { type: "separator" },
+                      { role: "quit" },
+                      isMac ? { role: "close" } : { role: "quit" },
+                  ],
+              },
+          ]
+        : []),
+    ...(isDevelopment
+        ? [
+              {
+                  label: "View",
+                  submenu: [{ role: "reload" }, { role: "forceReload" }, { role: "toggleDevTools" }],
+              },
+          ]
+        : []),
+];
 
 // Initialize the app.
 function initialize() {
@@ -54,8 +89,7 @@ function initialize() {
 
     mainWindow = new BrowserWindow(windowOptions);
 
-    // TODO: Does it work?
-    mainWindow.setMenuBarVisibility(false);
+    Menu.setApplicationMenu(Menu.buildFromTemplate(menuBarTemplate));
 
     mainWindow.loadFile(resolve(__dirname, "browser/index.html")).catch((error) => {
         console.error(`Failed to load main window: ${error.toString()}`);
@@ -83,7 +117,10 @@ function initializeBackendProcess() {
     backendProcess = spawn(pathToBackendExecutable);
 
     backendProcess.stdout.on("data", (data) => {
-        currentEvent.reply("inference-output", data.toString());
+        processUsageStatistics(backendProcess.pid, inferenceStartTime).then((result) => {
+            result.data = data.toString();
+            currentEvent.reply("inference-output", JSON.stringify(result));
+        });
     });
 
     backendProcess.stderr.on("data", (data) => {
@@ -147,6 +184,7 @@ ipcMain.on("dialog", async (_, message) => {
 
 ipcMain.on("inference-input", async (event, message) => {
     if (message.action === "start") {
+        inferenceStartTime = Date.now();
         currentEvent = event;
         backendProcess.stdin.write("generate\n");
     } else if (message.action === "stop") {
