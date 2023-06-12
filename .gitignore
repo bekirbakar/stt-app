@@ -1,15 +1,16 @@
 # Editor Generated Files
 .vscode/
 
-# Python eggs
+# Python Files
 *.egg-info/
+**/__pycache__/**
+**/venv/*
+
+# Node Files
+**/package-lock.json
+**/node_modules/*
 
 # Build Files
 **/build/*
 **/dist/*
-
-# Logs
-*.log
-
-# Temporary Ignore
-docker/
+**/release/*

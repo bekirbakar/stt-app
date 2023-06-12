@@ -1,21 +1,96 @@
 {
     "name": "stt-app",
     "version": "1.0.0",
-    "description": "Placeholder",
-    "main": "app.js",
-    "scripts": {
-        "test": "",
-        "start": "electron ."
-    },
+    "description": "Speech to Text Application",
+    "homepage": "https://github.com/bekirbakar/stt-app",
+    "repository": "https://github.com/bekirbakar/stt-app.git",
+    "license": "",
     "keywords": [],
-    "author": "Bekir Bakar",
-    "license": "ISC",
+    "author": {
+        "name": "Bekir Bakar",
+        "email": "bekirbakar@icloud.com"
+    },
+    "main": "app.js",
+    "build": {
+        "appId": "bb-stt-app",
+        "productName": "stt-app",
+        "artifactName": "stt-app.${ext}",
+        "publish": [
+            {
+                "provider": "generic",
+                "url": ""
+            }
+        ],
+        "directories": {
+            "output": "distribution/release"
+        },
+        "asarUnpack": [
+            "packages/**"
+        ],
+        "nsis": {
+            "oneClick": true,
+            "perMachine": false,
+            "allowToChangeInstallationDirectory": true,
+            "deleteAppDataOnUninstall": true
+        },
+        "mac": {
+            "category": "public.app-category.developer-tools",
+            "target": [
+                "dmg"
+            ],
+            "files": [
+                "browser/**/*",
+                "app.js",
+                "package.json",
+                "configuration/**/*",
+                "packages/**/*"
+            ],
+            "asar": true
+        },
+        "win": {
+            "target": [
+                "NSIS"
+            ],
+            "files": [
+                "browser/**/*",
+                "app.js",
+                "package.json",
+                "configuration/**/*",
+                "packages/**/*"
+            ],
+            "asar": true
+        },
+        "linux": {
+            "target": [
+                "AppImage"
+            ],
+            "files": [
+                "browser/**/*",
+                "app.js",
+                "package.json",
+                "configuration/**/*",
+                "packages/**/*"
+            ],
+            "asar": true
+        }
+    },
+    "scripts": {
+        "test": "echo \"No tests\"",
+        "start": "electron .",
+        "build-w": "electron-builder -w",
+        "build-m": "electron-builder -m",
+        "build-l": "electron-builder -l",
+        "build-wml": "electron-builder -wml"
+    },
     "devDependencies": {
         "electron": "^24.3.1",
+        "electron-builder": "^23.6.0",
         "jest": "^29.5.0"
     },
     "dependencies": {
+        "electron-is-dev": "^2.0.0",
         "electron-reload": "^2.0.0-alpha.1",
+        "pidusage": "^3.0.2",
         "python-shell": "^5.0.0"
     }
 }
