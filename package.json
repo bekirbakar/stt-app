@@ -11,51 +11,76 @@
         "email": "bekirbakar@icloud.com"
     },
     "main": "app.js",
-    "scripts": {
-        "test": "echo \"No tests\"",
-        "start": "electron .",
-        "build-mac": "electron-builder -m",
-        "build-windows": "electron-builder -w",
-        "build-linux": "electron-builder -l",
-        "build-all": "electron-builder -wml"
-    },
     "build": {
         "appId": "bb-stt-app",
         "productName": "stt-app",
         "artifactName": "stt-app.${ext}",
-        "publish": [],
-        "directories": {
-            "output": "release"
-        },
-        "files": [
-            "browser/**/*",
-            "app.js",
-            "package.json",
-            "configuration/**/*",
-            "packages/**/*"
+        "publish": [
+            {
+                "provider": "generic",
+                "url": ""
+            }
         ],
+        "directories": {
+            "output": "distribution/release"
+        },
         "asarUnpack": [
             "packages/**"
         ],
+        "nsis": {
+            "oneClick": true,
+            "perMachine": false,
+            "allowToChangeInstallationDirectory": true,
+            "deleteAppDataOnUninstall": true
+        },
         "mac": {
             "category": "public.app-category.developer-tools",
             "target": [
-                "dmg",
-                "zip"
-            ]
+                "dmg"
+            ],
+            "files": [
+                "browser/**/*",
+                "app.js",
+                "package.json",
+                "configuration/**/*",
+                "packages/**/*"
+            ],
+            "asar": true
         },
         "win": {
             "target": [
-                "nsis",
-                "zip"
-            ]
+                "NSIS"
+            ],
+            "files": [
+                "browser/**/*",
+                "app.js",
+                "package.json",
+                "configuration/**/*",
+                "packages/**/*"
+            ],
+            "asar": true
         },
         "linux": {
             "target": [
-                "AppImage",
-                "zip"
-            ]
+                "AppImage"
+            ],
+            "files": [
+                "browser/**/*",
+                "app.js",
+                "package.json",
+                "configuration/**/*",
+                "packages/**/*"
+            ],
+            "asar": true
         }
+    },
+    "scripts": {
+        "test": "echo \"No tests\"",
+        "start": "electron .",
+        "build-w": "electron-builder -w",
+        "build-m": "electron-builder -m",
+        "build-l": "electron-builder -l",
+        "build-wml": "electron-builder -wml"
     },
     "devDependencies": {
         "electron": "^24.3.1",

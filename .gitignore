@@ -13,4 +13,4 @@
 # Build Files
 **/build/*
 **/dist/*
-release/
+**/release/*
